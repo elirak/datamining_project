@@ -14,7 +14,7 @@ df1 = df1[df1.products_quantity >0]
 
 
 
-basket_ca=(df1[df1.state == 'CA'].head(30)
+basket_ca=(df1[df1['state']=='CA'].head(30)
            .groupby(['orders_id', 'product_name'])['products_quantity']
            .sum().unstack().reset_index().fillna(0)
            .set_index('orders_id'))
@@ -92,9 +92,11 @@ rules_mlxtend = association_rules(frequent_itemsets, metric="lift", min_threshol
 #print(rules_mlxtend.head())
 
 res=(pd.DataFrame(rules_mlxtend[ (rules_mlxtend['lift'] >= 6) & (rules_mlxtend['confidence'] >= 0.8) ]))
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
 print(res)
 
-import networkx as nx
+"""import networkx as nx
 import matplotlib.pyplot as plt
 
 def draw_graph(rules, rules_to_show):
@@ -106,9 +108,12 @@ def draw_graph(rules, rules_to_show):
 
     for i in range(rules_to_show):
         G1.add_nodes_from(["R"+str(i)])
+
         for a in rules.iloc[i]['antecedents']:
             G1.add_nodes_from([a])
             G1.add_edge(a, "R"+str(i), color=colors[i] , weight = 4)
+            #G1.add_node(rules['support'])
+
         for c in rules.iloc[i]['consequents']:
             G1.add_nodes_from([c])
             G1.add_edge("R"+str(i), c, color=colors[i],  weight=4)
@@ -137,4 +142,4 @@ def draw_graph(rules, rules_to_show):
         plt.show()
 
 draw_graph (rules_mlxtend, 10)
-
+"""
